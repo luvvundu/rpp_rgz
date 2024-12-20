@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Your Tickets</h2>
+    <ul id="ticket-list"></ul>
+
+    <script>
+        // Assuming you have an auth token or session available
+        fetch('/tickets', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const ticketList = document.getElementById("ticket-list");
+            data.forEach(ticket => {
+                const li = document.createElement("li");
+                li.textContent = `ID: ${ticket.id}, Title: ${ticket.title}, Status: ${ticket.status}`;
+                ticketList.appendChild(li);
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    </script>
+{% endblock %}
