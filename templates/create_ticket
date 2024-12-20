@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Create a Ticket</h2>
+    <form action="/tickets" method="post" id="ticket-form">
+        <label for="title">Ticket Title:</label>
+        <input type="text" id="title" name="title" required>
+        <br><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+        <br><br>
+        <button type="submit">Create Ticket</button>
+    </form>
+
+    <script>
+        document.getElementById("ticket-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+
+            fetch('/tickets', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')  // Assuming you store authToken
+                },
+                body: JSON.stringify({ title, description })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+{% endblock %}
