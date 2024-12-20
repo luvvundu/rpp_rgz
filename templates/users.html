@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Users List</h2>
+    <ul id="user-list"></ul>
+
+    <script>
+        fetch('/users', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const userList = document.getElementById("user-list");
+            data.forEach(user => {
+                const li = document.createElement("li");
+                li.textContent = `Username: ${user.username}, Role: ${user.role}`;
+                userList.appendChild(li);
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    </script>
+{% endblock %}
