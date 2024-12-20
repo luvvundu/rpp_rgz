@@ -1,0 +1,62 @@
+name: Run Tests and Security Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Шаг 1: Проверка репозитория
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Шаг 2: Установка Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'  # Укажите нужную версию Python
+
+    # Шаг 3: Установка зависимостей
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Устанавливает зависимости из requirements.txt
+
+    # Шаг 4: Запуск unit-тестов с помощью pytest
+    - name: Run unit tests
+      run: |
+        pytest --maxfail=1 --disable-warnings -q  # Запуск тестов с помощью pytest
+
+  security_check:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Шаг 1: Проверка репозитория
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Шаг 2: Установка Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'  # Укажите нужную версию Python
+
+    # Шаг 3: Установка зависимостей
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Устанавливает зависимости из requirements.txt
+
+    # Шаг 4: Установка Bandit для проверки безопасности кода
+    - name: Install Bandit
+      run: |
+        pip install bandit
+
+    # Шаг 5: Запуск Bandit для проверки безопасности Python-кода
+    - name: Run Bandit security check
+      run: |
+        bandit -r .  # Проверяет весь проект на наличие уязвимостей
